@@ -9,13 +9,13 @@ const server = require('../app.js');
 
 chai.use(chaiHttp);
 
-describe('Get all expenses',function(){
-    it('List expenses',function(done){
-        chai.request(server).get('/expenses').end((err,res) =>{
+describe('Get all expenses', function () {
+    it('List expenses', function (done) {
+        chai.request(server).get('/expenses').end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('data');
-            _.map(res.body.data,function(o){
+            _.map(res.body.data, function (o) {
                 o.should.have.property('notes');
                 o.should.have.property('title');
                 o.should.have.property('amount');
@@ -31,20 +31,20 @@ describe('Get all expenses',function(){
     })
 })
 
-describe('Create Expenses',function(){
-    it('Expense created',function(done){
+describe('Create Expenses', function () {
+    it('Expense created', function (done) {
         let expense = {
-            notes : 'purchases books',
-            title : 'books',
-            amount : 100,
-            tags : ['studystuff','maths']
+            notes: 'purchases books',
+            title: 'books',
+            amount: 100,
+            tags: ['studystuff', 'maths']
         }
-        chai.request(server).post('/expenses/create').send(expense).end((err,res) =>{
+        chai.request(server).post('/expenses/create').send(expense).end((err, res) => {
             console.log(res.body.should);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('data');
-            _.map(res.body.data,function(o){
+            _.map(res.body.data, function (o) {
                 o.should.have.property('notes');
                 o.should.have.property('title');
                 o.should.have.property('amount');
@@ -59,13 +59,13 @@ describe('Create Expenses',function(){
     })
 })
 
-describe('Delete expenses',function(){
-    it('Expense deleted',function(done){
-        chai.request(server).delete('/expenses/delete/' + _id ).end((err,res) =>{
+describe('Delete expenses', function () {
+    it('Expense deleted', function (done) {
+        chai.request(server).delete('/expenses/delete/' + _id).end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('data');
-            _.map(res.body.data,function(o){
+            _.map(res.body.data, function (o) {
                 o.should.have.property('notes');
                 o.should.have.property('title');
                 o.should.have.property('amount');
