@@ -10,7 +10,7 @@ const server = require('../app.js');
 chai.use(chaiHttp);
 
 describe('Get all expenses', function () {
-    it('List expenses', function (done) {
+    it('should list expense', function (done) {
         chai.request(server).get('/expenses').end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('object');
@@ -32,7 +32,7 @@ describe('Get all expenses', function () {
 })
 
 describe('Create Expenses', function () {
-    it('Expense created', function (done) {
+    it('should create expense', function (done) {
         let expense = {
             notes: 'purchases books',
             title: 'books',
@@ -57,9 +57,25 @@ describe('Create Expenses', function () {
         })
     })
 })
+describe('Search Expenses', function () {
+    it('should search expenses', function (done) {
+        let expense = {
+            search: 'coffee'
+        }
+        chai.request(server).post('/expenses/search').send(expense).end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('data');
+            _.map(res.body.data, function (o) {
+                o.notes.should.be.a('string');
+            });
+            done();
+        })
+    })
+})
 
 describe('Delete expenses', function () {
-    it('Expense deleted', function (done) {
+    it('should delete expense', function (done) {
         chai.request(server).delete('/expenses/delete/' + _id).end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('object');
