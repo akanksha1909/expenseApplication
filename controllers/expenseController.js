@@ -1,64 +1,77 @@
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const __ = require('../helpers/response');
-const bookmarkModel = require('../models/bookmark.js');
-const userModel  = require('../models/user.js');
+const expenseModel = require('../models/expenseModel.js');
 
-class bookmark{
-    async getBookmarks(req,res,status){
+class expense{
+    async getExpenses(req,res,status){
         try{
-            let bookmarkget = await bookmarkModel.find({user : req.user._id}).select('url title tags').sort({'created_at':-1}).lean();
-            let message = 'All bookmarks listed';
-            if(status == 1) message = 'Bookmark successfuly added';
-            if(status == 2) message = 'Bookmark succesfuly updated';
-            if(status == 3) message = 'Bookmark succesfuly deleted';
-            if(_.size(bookmarkget) > 0){
-                __.success(res,bookmarkget,message);
+            let expenseData = await expenseModel.find({}).select('notes title tags amount').sort({'created_at':-1}).lean();
+            let message = 'All Expenses listed';
+            switch(status){
+                case 1 : {
+                    message = 'Expenses Added Successfully';
+                    break;
+                }
+                case 2 : {
+                    message : 'Expenses Updated Successfully';
+                    break;
+                }
+                case 3 : {
+                    message : 'Expenses Deleted Successfully';
+                    break;
+                }
+                default :
+                    break;
+            }
+            if(_.size(expenseData) > 0){
+                __.success(res,expenseData,message);
             }else{
-                __.notFound(res,'No bookmark\'s available');
+                __.notFound(res,'No expenses\'s available');
             }
         }catch(error){
             __.errorInternal(res,error);
         }
      
     }
-    async addBookmark(req,res){
+    async addExpense(req,res){
         try {
             let temp = {
-                user : req.user._id,
+                notes : req.body.notes,
                 title : req.body.title,
-                url : req.body.url
+                amount : req.body.amount,
+                tags  : req.body.tags
             }
             temp.tags = req.body.tags;
-            let bookmarkcreate = await bookmarkModel.create(temp);
-            this.getBookmarks(req,res,1);
+            let expensecreate = await expenseModel.create(temp);
+            this.getExpenses(req,res,1);
         }catch(error){
             __.errorInternal(res,error);
         }
     }
-    async editBookmark(req,res){
+    async editExpense(req,res){
         try{
-            let getbookmark = await bookmarkModel.findOneAndUpdate({_id : req.body._id},{title : req.body.title,url:req.body.url,tags : req.body.tags});
-            if(!getbookmark){
-                return __.notFound(res,"Bookmark doesn't exist");
+            let getexpense = await expenseModel.findOneAndUpdate({_id : req.body._id},{title : req.body.title,notes:req.body.notes,tags : req.body.tags});
+            if(!getexpense){
+                return __.notFound(res,"Expenses doesn't exist");
             }
-            return this.getBookmarks(req,res,2);
+            return this.getExpenses(req,res,2);
         }catch(error){
             __.errorInternal(res,error);
         }
     }
-    async deleteBookmark(req,res){
+    async deleteExpense(req,res){
         try{
             if(mongoose.Types.ObjectId.isValid(req.params._id) === true){
-                let deletebookmark = await bookmarkModel.findOne({_id : req.params._id}).remove().exec();
-                return this.getBookmarks(req,res,3);
+                let deleteexpense = await expenseModel.findOne({_id : req.params._id}).remove().exec();
+                return this.getExpenses(req,res,3);
             }else{
-                return __.notFound(res,"Bookmark doesn't exist");      
+                return __.notFound(res,"Expenses doesn't exist");      
             }
         }catch(error){
             __.errorInternal(res,error);
         }
     }
 }   
-bookmark = new bookmark();
-module.exports = bookmark;
+expense = new expense();
+module.exports = expense;
