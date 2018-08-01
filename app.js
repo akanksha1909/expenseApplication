@@ -18,9 +18,10 @@ app.use(helmet());
 
 // To stop mongodb injection 
 app.use(mongoSanitize());
+mongoose.set('debug', true);
 
 const expenseRouter = require('./routes/expenseRoutes.js');
-app.use('/expenses',expenseRouter);
+app.use('/expenses', expenseRouter);
 
 switch (process.env.mode) {
     case 'development':
@@ -44,14 +45,14 @@ switch (process.env.mode) {
 
 // To prevent from brute force attack
 const limiter = new RateLimit({
-    windowMs: 15*60*1000, // 15 minutes
+    windowMs: 15 * 60 * 1000, // 15 minutes
     max: 600, // limit each IP to 100 requests per windowMs
     delayMs: 0 // disable delaying - full speed until the max limit is reached
 });
 
 app.use(limiter);
 
-mongoose.connect(process.env.DATABASE,{useNewUrlParser: true});
+mongoose.connect(process.env.DATABASE, { useNewUrlParser: true });
 
 // When successfully connected
 mongoose.connection.on('connected', function () {
