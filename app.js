@@ -8,6 +8,19 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const RateLimit = require('express-rate-limit');
 
+app.use(logger('dev'));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// used for stopping header attacks
+app.use(helmet());
+
+// To stop mongodb injection 
+app.use(mongoSanitize());
+
+const expenseRouter = require('./routes/expenseRoutes.js');
+app.use('/expenses',expenseRouter);
 
 switch (process.env.mode) {
     case 'development':
@@ -28,17 +41,6 @@ switch (process.env.mode) {
         process.env.DATABASE = process.env.ProdDatabase;
         break;
 }
-
-app.use(logger('dev'));
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// used for stopping header attacks
-app.use(helmet());
-
-// To stop mongodb injection 
-app.use(mongoSanitize());
 
 // To prevent from brute force attack
 const limiter = new RateLimit({

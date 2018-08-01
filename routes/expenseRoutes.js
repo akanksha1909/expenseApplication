@@ -17,7 +17,12 @@ expenseRouter.post('/create',(req,res,next) =>{
 expenseRouter.delete('/delete/:_id',function(req,res){
     expenseController.deleteExpense(req,res);
 });
-expenseRouter.get('/',function(req,res){
-    expenseController.getExpenses(req,res);
+expenseRouter.get('/:expenseid?',function(req,res){
+    console.log(req.params.expenseid);
+    if(req.params.expenseid){
+        expenseController.getParticularExpense(req,res);   
+    }else{
+        expenseController.getExpenses(req,res);
+    }
 });
 module.exports = expenseRouter;

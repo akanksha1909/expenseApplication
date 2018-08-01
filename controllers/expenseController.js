@@ -51,7 +51,7 @@ class expense{
     }
     async editExpense(req,res){
         try{
-            let getexpense = await expenseModel.findOneAndUpdate({_id : req.body._id},{title : req.body.title,notes:req.body.notes,tags : req.body.tags});
+            let getexpense = await expenseModel.findOneAndUpdate({_id : req.body._id},{title : req.body.title,amount : req.body.amount,notes:req.body.notes,tags : req.body.tags});
             if(!getexpense){
                 return __.notFound(res,"Expenses doesn't exist");
             }
@@ -60,6 +60,18 @@ class expense{
             __.errorInternal(res,error);
         }
     }
+    async getParticularExpense(req,res){
+        try{
+            let getexpense = await expenseModel.findOne({_id : req.params.expenseid}).select('notes title tags amount');
+            if(!getexpense){
+                return __.notFound(res,"Expenses doesn't exist");
+            }
+            __.success(res,getexpense,'Details of particular expense');
+        }catch(error){
+            __.errorInternal(res,error);
+        }
+    }
+
     async deleteExpense(req,res){
         try{
             if(mongoose.Types.ObjectId.isValid(req.params._id) === true){

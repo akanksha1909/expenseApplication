@@ -7,7 +7,10 @@ class validator{
                 console.log("Parameter missing => " + v);
             }
         })
-        if(req.error){
+        if(typeof req.body.amount != 'number'){
+            __.notAuthorized(res,'Amount should be a Number');
+        }
+        else if(req.error){
             __.badValues(res);
         }else{
             next();
