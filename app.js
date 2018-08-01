@@ -18,6 +18,8 @@ app.use(helmet());
 
 // To stop mongodb injection 
 app.use(mongoSanitize());
+
+// For logging queries
 mongoose.set('debug', true);
 
 const expenseRouter = require('./routes/expenseRoutes.js');

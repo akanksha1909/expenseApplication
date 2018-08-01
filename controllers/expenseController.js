@@ -4,6 +4,7 @@ const __ = require('../helpers/response');
 const expenseModel = require('../models/expenseModel.js');
 
 class expense {
+    // Function to get all expenses
     async getExpenses(req, res, status) {
         try {
             let expenseData = await expenseModel.find({}).select('notes title tags amount created_at').sort({ 'created_at': -1 }).lean();
@@ -32,8 +33,8 @@ class expense {
         } catch (error) {
             __.errorInternal(res, error);
         }
-
     }
+    // Function to add Expense
     async addExpense(req, res) {
         try {
             let temp = {
@@ -50,6 +51,7 @@ class expense {
             __.errorInternal(res, error);
         }
     }
+    //Function to Edit expense
     async editExpense(req, res) {
         try {
             let getexpense = await expenseModel.findOneAndUpdate({ _id: req.body._id }, { title: req.body.title, amount: req.body.amount, notes: req.body.notes, tags: req.body.tags });
@@ -61,6 +63,7 @@ class expense {
             __.errorInternal(res, error);
         }
     }
+    // Function to get Particular expense
     async getParticularExpense(req, res) {
         try {
             let getexpense = await expenseModel.findOne({ _id: req.params.expenseid }).select('notes title tags amount created_at');
@@ -72,7 +75,7 @@ class expense {
             __.errorInternal(res, error);
         }
     }
-
+    // Function to delete Particular expense
     async deleteExpense(req, res) {
         try {
             if (mongoose.Types.ObjectId.isValid(req.params._id) === true) {
