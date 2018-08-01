@@ -40,7 +40,6 @@ describe('Create Expenses', function () {
             tags: ['studystuff', 'maths']
         }
         chai.request(server).post('/expenses/create').send(expense).end((err, res) => {
-            console.log(res.body.should);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('data');

@@ -17,7 +17,9 @@ expenseRouter.post('/create', (req, res, next) => {
 });
 
 // Router function to search for an expense by title,tags or notes
-expenseRouter.post('/search', function (req, res) {
+expenseRouter.post('/search',(req, res, next) => {
+    validator.validate(req, res, next, ['search'])
+}, function (req, res) {
     expenseController.searchExpense(req, res);
 });
 
